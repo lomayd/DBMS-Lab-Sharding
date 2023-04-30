@@ -23,13 +23,13 @@ rules:
         actualDataNodes: LAB.User_$->{0..1}
         tableStrategy:
           standard:
-            shardingColumn: age
+            shardingColumn: id
             shardingAlgorithmName: inline
     shardingAlgorithms:
       inline:
         type: INLINE
         props:
-          algorithm-expression: User_$->{age % 2}
+          algorithm-expression: User_$->{id.length() % 2}
           allow-range-query-with-inline-sharding: true
 props:
   proxy-hint-enabled: true
