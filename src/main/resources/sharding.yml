@@ -65,6 +65,30 @@ rules:
     loadBalancers:
       readwrite-load-balancer:
         type: ROUND_ROBIN
+  - !MASK
+    tables:
+      User:
+        columns:
+          password:
+            maskAlgorithm: md5_mask
+          email:
+            maskAlgorithm: mask_before_special_chars_mask
+          name:
+            maskAlgorithm: keep_first_n_last_m_mask
+    maskAlgorithms:
+      md5_mask:
+        type: MD5
+      mask_before_special_chars_mask:
+        type: MASK_BEFORE_SPECIAL_CHARS
+        props:
+          special-chars: '@'
+          replace-char: '*'
+      keep_first_n_last_m_mask:
+        type: KEEP_FIRST_N_LAST_M
+        props:
+          first-n: 1
+          last-m: 1
+          replace-char: '*'
 props:
   proxy-hint-enabled: true
   sql-show: true
