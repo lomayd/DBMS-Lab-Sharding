@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -14,6 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
+    @Transactional
     public ResponseEntity<Void> joinUser(@RequestBody UserRequestDto.UserJoin userJoin) {
         userService.joinUser(userJoin);
         return ResponseEntity.ok().build();
@@ -25,12 +28,14 @@ public class UserController {
     }
 
     @PatchMapping
+    @Transactional
     public ResponseEntity<Void> modifyUser(@RequestParam String id, @RequestBody UserRequestDto.UserModify userModify) {
         userService.modifyUser(id, userModify);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
+    @Transactional
     public ResponseEntity<Void> removeUser(@RequestParam String id) {
         userService.removeUser(id);
         return ResponseEntity.ok().build();

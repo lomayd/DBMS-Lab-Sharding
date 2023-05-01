@@ -1,9 +1,33 @@
 dataSources:
-  LAB:
+  master:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.jdbc.Driver
     jdbcUrl: jdbc:mysql://localhost:3306/LAB?allowPublicKeyRetrieval=true&useSSL=false
-    username: root
+    username: user
+    password:
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 65
+    minPoolSize: 1
+
+  slave0:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:57626/LAB?allowPublicKeyRetrieval=true&useSSL=false
+    username: user
+    password:
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 65
+    minPoolSize: 1
+
+  slave1:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:57628/LAB?allowPublicKeyRetrieval=true&useSSL=false
+    username: user
     password:
     connectionTimeoutMilliseconds: 30000
     idleTimeoutMilliseconds: 60000
@@ -20,7 +44,7 @@ rules:
   - !SHARDING
     tables:
       User:
-        actualDataNodes: LAB.User_$->{0..1}
+        actualDataNodes: readwrite_ds.User_$->{0..1}
         tableStrategy:
           standard:
             shardingColumn: id
@@ -31,6 +55,16 @@ rules:
         props:
           algorithm-expression: User_$->{id.length() % 2}
           allow-range-query-with-inline-sharding: true
+  - !READWRITE_SPLITTING
+    dataSources:
+      readwrite_ds:
+        staticStrategy:
+          writeDataSourceName: master
+          readDataSourceNames: [slave0,slave1]
+        loadBalancerName: readwrite-load-balancer
+    loadBalancers:
+      readwrite-load-balancer:
+        type: ROUND_ROBIN
 props:
   proxy-hint-enabled: true
   sql-show: true
