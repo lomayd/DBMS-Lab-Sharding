@@ -4,7 +4,7 @@
 ```
 git clone https://github.com/lomayd/DBMS-Lab-Sharding.git
 
-cd ./DBMS-Lab-RDBMS
+cd ./DBMS-Lab-Sharding
 
 [Write down "MYSQL_PASSWORD","MYSQL_ROOT_PASSWORD", "MYSQL_MASTER_ROOT_PASSWORD" in docker-compose.yml]
 
@@ -14,7 +14,7 @@ docker-compose up --detach --scale master=1 --scale slave=2
 
 [Write down "dataSources.master.password", "dataSources.slave0.password", "dataSources.slave1.password" in /src/main/resources/sharding.yml]
 
-sudo chmod 777 ./gradlew
+sudo chmod 755 ./gradlew
 
 ./gradlew build
 
